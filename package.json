@@ -1,0 +1,11 @@
+{
+  "name": "simpsons-team-agents",
+  "version": "0.1.0",
+  "description": "Static team dashboard for the Simpsons agents team.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
