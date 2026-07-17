@@ -1,0 +1,39 @@
+:root {
+  color-scheme: light dark;
+}
+
+/*
+  Header display font: Luckiest Guy, self-hosted subset woff2 (zero third-party
+  requests). Licensed under Apache License 2.0 — see assets/fonts/LICENSE.txt.
+  The woff2 is subset to the letters of "SIMPSONS TEAM AGENTS". If the header
+  text ever changes, regenerate the subset (Google Fonts css2 `text=` param) or
+  the missing letters fall back to the stack below.
+*/
+@font-face {
+  font-family: "Luckiest Guy";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap; /* show fallback instantly, swap when the font is ready */
+  src: url("assets/fonts/luckiest-guy-subset.woff2") format("woff2");
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.site-header {
+  /* Small, responsive gap from the top edge. */
+  padding-top: clamp(1.5rem, 6vh, 4rem);
+  text-align: center;
+}
+
+.site-title {
+  margin: 0;
+  font-family: "Luckiest Guy", "Comic Sans MS", "Chalkboard SE", system-ui,
+    sans-serif;
+  text-transform: uppercase; /* font is caps-only; keeps rendering predictable */
+  letter-spacing: 0.02em; /* small air between the fat letters */
+  line-height: 1.05;
+  font-size: clamp(2rem, 8vw, 4.5rem);
+}

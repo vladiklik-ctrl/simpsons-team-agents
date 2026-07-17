@@ -15,8 +15,26 @@ The site is deployed to GitHub Pages:
 ## Project layout
 
 - `index.html` — the static page (the heading for now).
+- `styles.css` — page styles, including the `@font-face` for the title font.
+- `assets/fonts/` — the self-hosted display font and its license (see below).
 - `test/index.test.js` — automated test that checks the heading is present.
 - `.github/workflows/ci.yml` — CI (runs tests) and deployment to GitHub Pages.
+
+## Fonts
+
+The title is set in **Luckiest Guy**, a cartoon display face chosen to evoke a
+playful, hand-drawn title-card feel. It is **self-hosted** as a subset `woff2`
+(`assets/fonts/luckiest-guy-subset.woff2`) covering only the letters of
+"SIMPSONS TEAM AGENTS", so the page makes **zero third-party requests** for the
+font and loads with `font-display: swap`.
+
+- Font: Luckiest Guy — Copyright (c) 2010 Brian J. Bonislawsky DBA Astigmatic
+  (AOETI). Available under the Apache 2.0 license.
+- License: **Apache License 2.0** — full text in `assets/fonts/LICENSE.txt`,
+  attribution notice in `assets/fonts/NOTICE.txt`.
+
+> If the header text ever changes, regenerate the subset (Google Fonts `css2`
+> `text=` parameter) so no letters fall back to the system stack.
 
 ## Run locally
 
