@@ -1,5 +1,10 @@
 :root {
   color-scheme: light dark;
+
+  /* Title theme colors (Simpsons-inspired; we theme, not copy a trademark). */
+  --title-yellow: #ffd90f; /* title fill */
+  --title-outline: #0c1d30; /* dark outline that carries legibility */
+  --page-sky: #4fa9e6; /* page background — declared now, applied in step 004 */
 }
 
 /*
@@ -36,4 +41,25 @@ body {
   letter-spacing: 0.02em; /* small air between the fat letters */
   line-height: 1.05;
   font-size: clamp(2rem, 8vw, 4.5rem);
+
+  /*
+    Yellow fill + dark outline. The yellow alone has almost no contrast on the
+    (current white) background, so the dark outline carries legibility — it is
+    required, not decorative. paint-order draws the stroke under the fill so the
+    2px stroke does not thin the heavy letters.
+  */
+  color: var(--title-yellow);
+  -webkit-text-stroke: 2px var(--title-outline);
+  paint-order: stroke fill;
+}
+
+/* Fallback outline for engines without text-stroke/paint-order (very old). */
+@supports not ((-webkit-text-stroke: 2px #000) and (paint-order: stroke)) {
+  .site-title {
+    -webkit-text-stroke: 0;
+    text-shadow: -2px -2px 0 var(--title-outline), 0 -2px 0 var(--title-outline),
+      2px -2px 0 var(--title-outline), -2px 0 0 var(--title-outline),
+      2px 0 0 var(--title-outline), -2px 2px 0 var(--title-outline),
+      0 2px 0 var(--title-outline), 2px 2px 0 var(--title-outline);
+  }
 }
