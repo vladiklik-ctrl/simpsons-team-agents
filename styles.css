@@ -1,5 +1,11 @@
 :root {
-  color-scheme: light dark;
+  /*
+    Lock the page to a light color scheme. With "light dark" (and no explicit
+    body background) some browsers apply an auto dark theme that repaints the
+    background dark and recolors the title inconsistently across devices. We
+    render our own fixed colors, so opt out of the auto dark theme.
+  */
+  color-scheme: light;
 
   /* Title theme colors (Simpsons-inspired; we theme, not copy a trademark). */
   --title-yellow: #ffd90f; /* title fill */
@@ -25,6 +31,7 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
+  background: var(--page-sky); /* sky blue, matched to the yellow title */
 }
 
 .site-header {

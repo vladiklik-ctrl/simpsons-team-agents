@@ -27,13 +27,22 @@ test("outline has a text-shadow fallback for engines without text-stroke", () =>
   assert.match(css, /text-shadow:[\s\S]*var\(--title-outline\)/, "fallback should draw the outline");
 });
 
-test("step 003 does not change the page background (that is step 004)", () => {
-  // Extract the top-level `body { ... }` rule and make sure it sets no background.
+test("page background is the sky-blue token", () => {
   const bodyRule = css.match(/\bbody\s*\{([^}]*)\}/);
   assert.ok(bodyRule, "expected a body rule");
-  assert.doesNotMatch(
+  assert.match(
     bodyRule[1],
-    /background/,
-    "body must not set a background in step 003 (sky-blue ships in 004)",
+    /background:\s*var\(--page-sky\)/,
+    "body should use the --page-sky background",
+  );
+});
+
+test("color-scheme is locked to light (no auto dark theme repaint)", () => {
+  const rootRule = css.match(/:root\s*\{([^}]*)\}/);
+  assert.ok(rootRule, "expected a :root rule");
+  assert.match(
+    rootRule[1],
+    /color-scheme:\s*(only\s+)?light\s*;/,
+    "color-scheme must be light (not 'light dark') so browsers do not auto-darken",
   );
 });
