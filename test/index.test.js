@@ -13,3 +13,12 @@ test("index.html contains the site heading", async () => {
     "expected an <h1> heading with the text 'simpsons team agents'",
   );
 });
+
+test("index.html opts out of browser auto dark theme", async () => {
+  const html = await readFile(indexPath, "utf8");
+  assert.match(
+    html,
+    /<meta\s+name="color-scheme"\s+content="(only\s+)?light"/,
+    "expected a <meta name=\"color-scheme\" content=\"only light\"> opt-out",
+  );
+});
