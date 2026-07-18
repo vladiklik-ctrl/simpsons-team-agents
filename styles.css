@@ -596,3 +596,26 @@ main {
 .agent-card[data-status="offline"] .agent-card__lantern {
   filter: brightness(0.85);
 }
+
+/* ============================================================================
+   Card hover-zoom + click "poke" reaction (experiment/live-status branch, task 030).
+   Hover magnifies the card on pointer devices; a click/tap swaps the avatar to
+   the agent's "poked" pose for ~1s (handled in poke.js). Visual only.
+   ========================================================================== */
+
+/* Ease the zoom both ways. scale() is a transform, so it is purely visual: the
+   grid tracks never reflow and neighbouring cards do not move. */
+.agent-card {
+  transition: transform 0.15s ease;
+  transform-origin: center;
+}
+
+/* Only devices that truly hover (fine pointer) get the zoom — on touch screens
+   :hover would stick after a tap, so those fall through to the click reaction. */
+@media (hover: hover) and (pointer: fine) {
+  .agent-card:hover {
+    transform: scale(1.15);
+    z-index: 5; /* lift above neighbours so the enlarged card is never clipped */
+    cursor: pointer;
+  }
+}

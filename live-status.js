@@ -58,7 +58,10 @@
     var word = card.querySelector(".agent-card__status-text");
     if (word) word.textContent = WORDS[status] || cap(status);
 
-    if (img) {
+    // While a "poke" reaction is showing (poke.js sets data-poked), it owns the
+    // avatar image; it will revert to this new status's pose when it ends. We
+    // still updated the status/word/lantern above, so only the picture waits.
+    if (img && !card.dataset.poked) {
       var src = "assets/emotions/" + agent + "-" + poseFor(status) + ".webp";
       // brief crossfade for a smooth pose change (image is preloaded)
       img.style.opacity = "0";
