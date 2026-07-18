@@ -67,6 +67,26 @@
           <circle cx="105" cy="54" r="36" />
           <circle cx="150" cy="64" r="26" />
         </g>
+
+        <!-- Caged industrial status lantern (reused by every agent card via <use>).
+             The bulb uses currentColor, so each card colors it via `color: var(--status)`. -->
+        <radialGradient id="lanternHi" cx="0.42" cy="0.36" r="0.6">
+          <stop offset="0" stop-color="#fff" stop-opacity="0.95" />
+          <stop offset="0.5" stop-color="#fff" stop-opacity="0" />
+        </radialGradient>
+        <symbol id="agent-lantern" viewBox="0 0 60 78">
+          <rect x="24" y="4" width="12" height="7" rx="2" fill="#3a597f" stroke="#1c3450" />
+          <path d="M18 12 h24 l-4 7 h-16 z" fill="#3a597f" stroke="#1c3450" />
+          <circle cx="30" cy="40" r="17" fill="currentColor" />
+          <circle cx="30" cy="40" r="17" fill="url(#lanternHi)" />
+          <circle cx="30" cy="40" r="17" fill="none" stroke="#6a5628" stroke-width="1.6" />
+          <line x1="13" y1="34" x2="47" y2="34" stroke="#6a5628" stroke-width="1.4" />
+          <line x1="13" y1="46" x2="47" y2="46" stroke="#6a5628" stroke-width="1.4" />
+          <line x1="20" y1="25" x2="20" y2="55" stroke="#6a5628" stroke-width="1.4" />
+          <line x1="30" y1="23" x2="30" y2="57" stroke="#6a5628" stroke-width="1.4" />
+          <line x1="40" y1="25" x2="40" y2="55" stroke="#6a5628" stroke-width="1.4" />
+          <path d="M22 57 h16 l-4 6 h-8 z" fill="#3a597f" stroke="#1c3450" />
+        </symbol>
       </defs>
     </svg>
 
@@ -109,25 +129,75 @@
       <h2 id="team-heading" class="team__title">Team</h2>
 
       <ul class="team__grid">
-        <li class="team__item">
-          <span class="lantern" aria-hidden="true"></span>
-          <div class="card"></div>
+        <li class="agent-card" data-status="ready">
+          <span class="agent-card__lantern" aria-hidden="true">
+            <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
+          </span>
+          <div class="agent-card__frame">
+            <div class="agent-card__panel"></div>
+            <p class="agent-card__name">March</p>
+            <p class="agent-card__role">Orchestrator</p>
+            <p class="agent-card__status">
+              <span class="agent-card__dot" aria-hidden="true"></span>
+              <span class="agent-card__status-text">Ready</span>
+            </p>
+          </div>
         </li>
-        <li class="team__item">
-          <span class="lantern" aria-hidden="true"></span>
-          <div class="card"></div>
+        <li class="agent-card" data-status="ready">
+          <span class="agent-card__lantern" aria-hidden="true">
+            <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
+          </span>
+          <div class="agent-card__frame">
+            <div class="agent-card__panel"></div>
+            <p class="agent-card__name">Homer</p>
+            <p class="agent-card__role">Developer</p>
+            <p class="agent-card__status">
+              <span class="agent-card__dot" aria-hidden="true"></span>
+              <span class="agent-card__status-text">Ready</span>
+            </p>
+          </div>
         </li>
-        <li class="team__item">
-          <span class="lantern" aria-hidden="true"></span>
-          <div class="card"></div>
+        <li class="agent-card" data-status="ready">
+          <span class="agent-card__lantern" aria-hidden="true">
+            <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
+          </span>
+          <div class="agent-card__frame">
+            <div class="agent-card__panel"></div>
+            <p class="agent-card__name">Bart</p>
+            <p class="agent-card__role">Reviewer</p>
+            <p class="agent-card__status">
+              <span class="agent-card__dot" aria-hidden="true"></span>
+              <span class="agent-card__status-text">Ready</span>
+            </p>
+          </div>
         </li>
-        <li class="team__item">
-          <span class="lantern" aria-hidden="true"></span>
-          <div class="card"></div>
+        <li class="agent-card" data-status="ready">
+          <span class="agent-card__lantern" aria-hidden="true">
+            <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
+          </span>
+          <div class="agent-card__frame">
+            <div class="agent-card__panel"></div>
+            <p class="agent-card__name">Lisa</p>
+            <p class="agent-card__role">Reviewer</p>
+            <p class="agent-card__status">
+              <span class="agent-card__dot" aria-hidden="true"></span>
+              <span class="agent-card__status-text">Ready</span>
+            </p>
+          </div>
         </li>
-        <li class="team__item">
-          <span class="lantern" aria-hidden="true"></span>
-          <div class="card"></div>
+        <li class="agent-card" data-status="ready">
+          <span class="agent-card__lantern" aria-hidden="true">
+            <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
+          </span>
+          <div class="agent-card__frame">
+            <div class="agent-card__panel"></div>
+            <p class="agent-card__name">Maggie</p>
+            <p class="agent-card__role">Designer</p>
+            <p class="agent-card__status">
+              <span class="agent-card__dot" aria-hidden="true"></span>
+              <span class="agent-card__status-text">Ready</span>
+            </p>
+          </div>
         </li>
       </ul>
     </section>

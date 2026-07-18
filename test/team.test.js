@@ -15,12 +15,35 @@ test("team section is a labelled landmark with a heading", () => {
   assert.match(html, /<h2 id="team-heading"[^>]*>\s*Team\s*<\/h2>/);
 });
 
-test("team section has 5 placeholder cards, each with a lantern slot", () => {
-  assert.equal(count(/class="team__item"/g), 5, "expected 5 team items");
-  assert.equal(count(/class="card"/g), 5, "expected 5 placeholder cards");
+test("there are 5 agent cards, all default status ready", () => {
+  assert.equal(count(/class="agent-card"/g), 5, "expected 5 agent cards");
   assert.equal(
-    count(/class="lantern" aria-hidden="true"/g),
+    count(/class="agent-card" data-status="ready"/g),
     5,
-    "expected 5 decorative lantern slots (aria-hidden)",
+    "expected all 5 cards to default to data-status=ready",
   );
+  // decorative lantern + status word carry meaning; lantern is aria-hidden
+  assert.equal(count(/agent-card__lantern" aria-hidden="true"/g), 5);
+  assert.equal(count(/agent-card__status-text">Ready</g), 5);
+});
+
+test("cards carry the real team data (name + role)", () => {
+  for (const [name, role] of [
+    ["March", "Orchestrator"],
+    ["Homer", "Developer"],
+    ["Bart", "Reviewer"],
+    ["Lisa", "Reviewer"],
+    ["Maggie", "Designer"],
+  ]) {
+    assert.match(
+      html,
+      new RegExp(`agent-card__name">${name}</p>`),
+      `expected a name plate for ${name}`,
+    );
+    assert.match(
+      html,
+      new RegExp(`agent-card__role">${role}</p>`),
+      `expected a role plate "${role}"`,
+    );
+  }
 });

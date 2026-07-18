@@ -277,15 +277,11 @@ main {
 }
 
 /* ============================================================================
-   Team cards section v1 (task 018) — grey placeholder cards below the intro.
+   Team cards section (task 021) — real agent cards (SVG/CSS) below the intro.
    Skeleton only: avatars/names/roles/status come later. Colors/gaps/ratio are
    provisional placeholders (easy to tune). Does NOT touch the intro/title/bg.
    ========================================================================== */
 .team {
-  --card-grey: #cbd2d9; /* neutral grey placeholder (provisional) */
-  --lantern-fill: #e6ebef; /* reserved-slot fill */
-  --lantern-stroke: #aeb7c0; /* dashed placeholder outline */
-
   position: relative; /* sit above the fixed .sky background layer (z-index 0) */
   z-index: 1;
   box-sizing: border-box;
@@ -328,28 +324,129 @@ main {
   }
 }
 
-/* Each item stacks: lantern slot on top, then the card. */
-.team__item {
+/* ---- Agent card: industrial caged-lantern component, self-scaling via cqw.
+   Everything sizes in cqw (% of the card's own width) so a card looks identical
+   whether it is ~1/5 of the desktop row or ~48vw on mobile — no separate mobile
+   layout. Status color (--status) drives the lantern glow, panel wash, dot and
+   status word. Self-contained: inline SVG + CSS gradients, no image assets. ---- */
+.agent-card {
+  --status: #4fc85a; /* default = ready; overridden per data-status below */
+
+  container-type: inline-size; /* enable cqw units -> text scales with card width */
+  position: relative;
+  list-style: none;
+  min-width: 0; /* avoid grid overflow */
+  padding-top: 13cqw; /* reserve space for the overhanging lantern */
+}
+.agent-card[data-status="working"] { --status: #f4b723; }
+.agent-card[data-status="ready"] { --status: #4fc85a; }
+.agent-card[data-status="question"] { --status: #f5942a; }
+.agent-card[data-status="down"] { --status: #f2564a; }
+.agent-card[data-status="resting"] { --status: #8fb0da; }
+
+/* ---- dark-blue metal frame with corner rivets ---- */
+.agent-card__frame {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: 9cqw;
+  padding: 5cqw;
   display: flex;
   flex-direction: column;
-  align-items: center; /* center the lantern over the card */
-  min-width: 0; /* avoid grid overflow */
+  gap: 2.5cqw;
+  background: linear-gradient(#456799, #2b466a);
+  border: 0.7cqw solid #1c3450;
+  box-shadow: inset 0 0 0 0.7cqw #32517a, inset 0 0 0 1.4cqw #24405f;
+}
+.agent-card__frame::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle 2.2cqw at 8cqw 8cqw, #d3dae1, #7e8a96 80%, transparent 82%),
+    radial-gradient(circle 2.2cqw at calc(100% - 8cqw) 8cqw, #d3dae1, #7e8a96 80%, transparent 82%),
+    radial-gradient(circle 2.2cqw at 8cqw calc(100% - 8cqw), #d3dae1, #7e8a96 80%, transparent 82%),
+    radial-gradient(circle 2.2cqw at calc(100% - 8cqw) calc(100% - 8cqw), #d3dae1, #7e8a96 80%, transparent 82%);
 }
 
-/* Reserved status "lantern" slot — dashed placeholder circle for now. */
-.lantern {
-  width: 20%; /* ~20% of the card width (item width == card width) */
-  aspect-ratio: 1; /* circle */
+/* ---- cream avatar panel (status-colored glow at top; avatar image later) ---- */
+.agent-card__panel {
+  flex: 1 1 auto;
+  border-radius: 5cqw;
+  background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--status) 45%, transparent), transparent 60%),
+    #f4e6c0;
+  border: 1px solid #c9b487;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* ---- brass name plate ---- */
+.agent-card__name {
+  margin: 0;
+  text-align: center;
+  font: 800 9cqw/1.1 "Arial Black", Arial, sans-serif;
+  color: #1b2c40;
+  padding: 2.4cqw 3cqw;
+  border-radius: 3.5cqw;
+  background: linear-gradient(#f3cb5e, #e4a835 55%, #cc8f22);
+  border: 1px solid #a9781a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- blue role plate ---- */
+.agent-card__role {
+  margin: 0;
+  text-align: center;
+  font: 700 5.4cqw/1 Arial, sans-serif;
+  letter-spacing: 0.05em;
+  color: #cdd8e5;
+  padding: 2cqw;
+  border-radius: 2.6cqw;
+  background: #38567c;
+  border: 1px solid #25405f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- status bar (colored dot + status word) ---- */
+.agent-card__status {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3cqw;
+  padding: 2.6cqw;
+  border-radius: 3cqw;
+  background: #212d39;
+  border: 1px solid #4a5a6b;
+  font: 800 6.2cqw/1 Arial, sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--status);
+}
+.agent-card__dot {
+  width: 4.5cqw;
+  height: 4.5cqw;
   border-radius: 50%;
-  background: var(--lantern-fill);
-  border: 2px dashed var(--lantern-stroke);
-  margin-bottom: clamp(6px, 1.2vw, 12px); /* gap between lantern and card */
+  background: var(--status);
+  box-shadow: 0 0 2cqw var(--status); /* soft glow */
+  flex: none;
 }
 
-/* Grey vertical placeholder card — waist-up (half-body) portrait ratio. */
-.card {
-  width: 100%;
-  aspect-ratio: 4 / 5; /* vertical */
-  background: var(--card-grey);
-  border-radius: clamp(10px, 1.4vw, 16px);
+/* ---- caged lantern overhanging the top; glows in the status color ---- */
+.agent-card__lantern {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22cqw;
+  height: 28cqw;
+  z-index: 2;
+  color: var(--status); /* the SVG bulb uses currentColor */
+  filter: drop-shadow(0 0 6cqw color-mix(in srgb, var(--status) 70%, transparent)); /* glow halo */
+}
+.agent-card__lantern svg {
+  display: block;
 }
