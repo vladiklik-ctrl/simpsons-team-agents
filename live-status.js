@@ -35,11 +35,13 @@
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  // Preload every pose so status swaps are instant (no flash of a loading image).
+  // Preload every real pose so status swaps are instant (no flash). Offline has
+  // no artwork (it reuses the resting pose), so only these 5 files exist.
+  var POSES = ["working", "resting", "question", "idle", "down"];
   AGENTS.forEach(function (a) {
-    STATUSES.forEach(function (s) {
+    POSES.forEach(function (p) {
       var img = new Image();
-      img.src = "assets/emotions/" + a + "-" + s + ".webp";
+      img.src = "assets/emotions/" + a + "-" + p + ".webp";
     });
   });
 

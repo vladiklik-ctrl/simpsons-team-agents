@@ -42,11 +42,15 @@ detect() {
     if is_valid "$v"; then printf '%s' "$v"; return; fi
   fi
   if ! tmux has-session -t "$a" 2>/dev/null; then printf 'down'; return; fi
-  pane="$(tmux capture-pane -pt "$a" -S -40 2>/dev/null || true)"
-  # busy: the agent CLI is processing (Claude/others show "esc to interrupt/cancel")
-  if printf '%s' "$pane" | grep -qiE 'esc to interrupt|esc to cancel'; then printf 'working'; return; fi
+  # Look ONLY at the CURRENT visible bottom of the pane (no scrollback) so stale
+  # "esc to interrupt" left in the history can't be mistaken for busy. The live
+  # busy indicator lives in the bottom status bar for both Claude ("esc to
+  # interrupt") and Codex ("Working (… esc to interrupt)"). Re-evaluated every
+  # cycle, so a return to idle flips it straight back to resting.
+  bottom="$(tmux capture-pane -pt "$a" 2>/dev/null | grep -vE '^[[:space:]]*$' | tail -n 6 || true)"
+  if printf '%s' "$bottom" | grep -qiE 'esc to interrupt'; then printf 'working'; return; fi
   # crashed: the CLI exited to a bare shell prompt (last non-blank line is a shell)
-  if printf '%s\n' "$pane" | grep -vE '^[[:space:]]*$' | tail -1 \
+  if printf '%s\n' "$bottom" | tail -1 \
        | grep -qE '[[:alnum:]._-]+@[[:alnum:]._-]+.*[$#][[:space:]]*$'; then printf 'down'; return; fi
   # session alive at an idle prompt (Claude "❯", Codex "›", or any) -> resting
   printf 'resting'
