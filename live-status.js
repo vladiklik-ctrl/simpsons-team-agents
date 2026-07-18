@@ -27,8 +27,10 @@
   function poseFor(status) {
     return status === "offline" ? "resting" : status;
   }
-  var RAW =
-    "https://raw.githubusercontent.com/vladiklik-ctrl/simpsons-team-agents/experiment/live-status/status.json";
+  // Same-origin status.json served by Pages from this branch. Pages PURGES its CDN
+  // cache on every deploy, so a watchdog push shows up within seconds of the deploy
+  // (unlike raw.githubusercontent, which ignores cache-busting and caches 5 min).
+  var STATUS_URL = "status.json";
   var POLL_MS = 5000;
 
   function cap(s) {
@@ -68,7 +70,7 @@
   }
 
   function poll() {
-    fetch(RAW + "?t=" + Date.now(), { cache: "no-store" })
+    fetch(STATUS_URL + "?t=" + Date.now(), { cache: "no-store" })
       .then(function (res) {
         return res.ok ? res.json() : null;
       })
