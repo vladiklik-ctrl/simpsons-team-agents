@@ -140,19 +140,21 @@ main {
   height: auto;
 }
 
-/* ---- Title: zoom-out (bigger than screen, centered -> resting header spot) ---- */
+/* ---- Title: GIANT zoom-out (much bigger than screen -> resting header spot) ---- */
 /* Visual style (yellow + outline, font) is untouched; this only adds motion. */
 .site-title {
   transform-origin: center center;
-  animation: title-zoom 2.7s cubic-bezier(0.22, 0.61, 0.36, 1) 0.1s both; /* ease-out, no overshoot */
+  animation: title-zoom 2.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0s both; /* ease-out, no overshoot */
   will-change: transform;
 }
 @keyframes title-zoom {
-  0% { transform: translateY(40vh) scale(2.6); } /* bigger than screen, ~viewport center */
+  /* Giant and viewport-centered, HELD to 20% so the shrink is clearly visible,
+     then it travels up to the header while/after the clouds part. */
+  0%, 20% { transform: translateY(40vh) scale(5); }
   100% { transform: translateY(0) scale(1); } /* == resting header position/size */
 }
 
-/* ---- Intro curtain: 5 puffy clouds, solid white -> part in 5 directions ---- */
+/* ---- Intro curtain: 5 recognizable clouds clustered at center, part at varied speeds ---- */
 .intro {
   position: fixed;
   inset: 0;
@@ -161,29 +163,54 @@ main {
 }
 .cur {
   position: absolute;
-  width: auto; /* height-driven; 2:1 viewBox -> width = 2x height */
+  height: auto; /* width-driven; each puff reads as a separate cloud */
   will-change: transform, opacity;
 }
-/* Oversized + anchored past the edges -> heavy overlap = solid white union. */
-.cur--1 { height: 98vh; left: -34vw; top: -34vh; }   /* top-left     */
-.cur--2 { height: 98vh; right: -34vw; top: -30vh; }  /* top-right    */
-.cur--3 { height: 92vh; left: -30vw; top: -6vh; }    /* center       */
-.cur--4 { height: 98vh; left: -34vw; bottom: -34vh; }/* bottom-left  */
-.cur--5 { height: 98vh; right: -30vw; bottom: -26vh; }/* bottom-right */
+/* Moderate sizes + centered cluster hiding the giant title's central text.
+   Sky at the edges / small gaps is intended (operator's priority: reads as 5
+   clouds > 100% white). */
+.cur--1 { width: 36vw; left: 19.5vw; top: 23vh; } /* A · up-left   */
+.cur--2 { width: 36vw; left: 47vw; top: 23vh; }   /* B · up-right  */
+.cur--3 { width: 42vw; left: 29vw; top: 30vh; }   /* C · down      */
+.cur--4 { width: 38vw; left: 21vw; top: 42vh; }   /* B · down-left */
+.cur--5 { width: 38vw; left: 43vw; top: 42vh; }   /* A · right     */
 
 /* Resting (final) state = off-screen + transparent (== each keyframe 100%). */
-.cur--1 { transform: translate(-135vw, 0); opacity: 0; animation: cur-1 2.6s cubic-bezier(0.6, 0, 0.35, 1) 0.2s both; }
-.cur--2 { transform: translate(135vw, 0); opacity: 0; animation: cur-2 2.6s cubic-bezier(0.6, 0, 0.35, 1) 0.2s both; }
-.cur--3 { transform: translate(0, -135vh); opacity: 0; animation: cur-3 2.6s cubic-bezier(0.6, 0, 0.35, 1) 0.2s both; }
-.cur--4 { transform: translate(-130vw, 130vh); opacity: 0; animation: cur-4 2.6s cubic-bezier(0.6, 0, 0.35, 1) 0.2s both; }
-.cur--5 { transform: translate(0, 135vh); opacity: 0; animation: cur-5 2.6s cubic-bezier(0.6, 0, 0.35, 1) 0.2s both; }
+.cur--1 { transform: translate(-120vw, -120vh); opacity: 0; }
+.cur--2 { transform: translate(120vw, -120vh); opacity: 0; }
+.cur--3 { transform: translate(0, 120vh); opacity: 0; }
+.cur--4 { transform: translate(-120vw, 120vh); opacity: 0; }
+.cur--5 { transform: translate(130vw, 0); opacity: 0; }
 
-/* 0%,12% = brief "closed" beat (solid white); opacity holds to 85% then fades. */
-@keyframes cur-1 { 0%, 12% { transform: translate(0, 0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(-135vw, 0); opacity: 0; } }
-@keyframes cur-2 { 0%, 12% { transform: translate(0, 0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(135vw, 0); opacity: 0; } }
-@keyframes cur-3 { 0%, 12% { transform: translate(0, 0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(0, -135vh); opacity: 0; } }
-@keyframes cur-4 { 0%, 12% { transform: translate(0, 0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(-130vw, 130vh); opacity: 0; } }
-@keyframes cur-5 { 0%, 12% { transform: translate(0, 0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(0, 135vh); opacity: 0; } }
+/* DIFFERENT durations = different speeds (organic, not mechanical). Same delay. */
+.cur--1 { animation: cur-1 2.2s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
+.cur--2 { animation: cur-2 2.7s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
+.cur--3 { animation: cur-3 2.0s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
+.cur--4 { animation: cur-4 2.5s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
+.cur--5 { animation: cur-5 2.3s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
 
-/* NOTE: no prefers-reduced-motion block by design -- single-user site; the
-   operator wants the intro to play unconditionally on every load. */
+/* 0%,10% = brief "closed" cluster over the center, then each flies out. */
+@keyframes cur-1 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-120vw, -120vh); opacity: 0; } }
+@keyframes cur-2 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(120vw, -120vh); opacity: 0; } }
+@keyframes cur-3 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(0, 120vh); opacity: 0; } }
+@keyframes cur-4 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-120vw, 120vh); opacity: 0; } }
+@keyframes cur-5 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(130vw, 0); opacity: 0; } }
+
+/* ---- Anti-freeze: honor reduced-motion by showing the FINAL state ----
+   Some engines (e.g. the operator's desktop Opera) pause CSS animations under
+   prefers-reduced-motion; with animation-fill-mode:both that would hold the 0%
+   frame (the cloud cluster over the title) forever. Overriding to the resting/
+   final state guarantees the page is never stuck. This intentionally overrides
+   the spec's "always play" default (decision made after the operator's freeze bug). */
+@media (prefers-reduced-motion: reduce) {
+  .intro {
+    display: none;
+  }
+  .site-title {
+    animation: none;
+    transform: none;
+  }
+  .drift-track {
+    animation: none;
+  }
+}
