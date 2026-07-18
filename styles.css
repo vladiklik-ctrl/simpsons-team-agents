@@ -499,3 +499,100 @@ main {
 .agent-card__status {
   transition: color 0.4s ease;
 }
+
+/* ============================================================================
+   Lantern glow animation per status (experiment/live-status branch).
+   Adds a motion character to the status glow (colors unchanged — from --status).
+   Animates only opacity/transform on decorative glow pseudo-layers; the avatar,
+   cage, plates and layout never move. Alarming states (down/question) grab
+   attention; calm states (idle/resting) stay quiet; offline is dim + static.
+   ========================================================================== */
+
+/* Colored halo behind the lantern (the animated glow layer). */
+.agent-card__lantern::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--status) 0%, transparent 72%);
+  z-index: -1;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+/* Matching glow on the status dot, animated in sync. */
+.agent-card__dot {
+  position: relative;
+}
+.agent-card__dot::after {
+  content: "";
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--status) 0%, transparent 70%);
+  z-index: -1;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+@keyframes glow-pulse { /* working — soft pulse */
+  0%, 100% { opacity: 0.78; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+@keyframes glow-calm { /* idle — steady, barely-there */
+  0%, 100% { opacity: 0.92; }
+  50% { opacity: 1; }
+}
+@keyframes glow-flicker { /* question — faulty / uneven */
+  0%, 7% { opacity: 1; }
+  9% { opacity: 0.5; }
+  11%, 21% { opacity: 0.96; }
+  23% { opacity: 0.55; }
+  25%, 44% { opacity: 1; }
+  47% { opacity: 0.68; }
+  49%, 58% { opacity: 0.98; }
+  60% { opacity: 0.45; }
+  62%, 77% { opacity: 1; }
+  80% { opacity: 0.6; }
+  82%, 92% { opacity: 0.95; }
+  94% { opacity: 0.8; }
+  96%, 100% { opacity: 1; }
+}
+@keyframes glow-breathe { /* resting — slow breath */
+  0%, 100% { opacity: 0.55; transform: scale(0.97); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+@keyframes glow-strobe { /* crashed/down — alarm blink ~1.25 Hz, eye-safe */
+  0%, 38% { opacity: 1; }
+  44%, 82% { opacity: 0.18; }
+  88%, 100% { opacity: 1; }
+}
+
+.agent-card[data-status="working"] .agent-card__lantern::before,
+.agent-card[data-status="working"] .agent-card__dot::after {
+  animation: glow-pulse 1.6s ease-in-out infinite;
+}
+.agent-card[data-status="idle"] .agent-card__lantern::before,
+.agent-card[data-status="idle"] .agent-card__dot::after {
+  animation: glow-calm 5s ease-in-out infinite;
+}
+.agent-card[data-status="question"] .agent-card__lantern::before,
+.agent-card[data-status="question"] .agent-card__dot::after {
+  animation: glow-flicker 2.4s linear infinite;
+}
+.agent-card[data-status="resting"] .agent-card__lantern::before,
+.agent-card[data-status="resting"] .agent-card__dot::after {
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+.agent-card[data-status="down"] .agent-card__lantern::before,
+.agent-card[data-status="down"] .agent-card__dot::after {
+  animation: glow-strobe 0.8s linear infinite;
+}
+/* offline — dim & static (no motion); reinforces "powered off". */
+.agent-card[data-status="offline"] .agent-card__lantern::before,
+.agent-card[data-status="offline"] .agent-card__dot::after {
+  animation: none;
+  opacity: 0.4;
+}
+.agent-card[data-status="offline"] .agent-card__lantern {
+  filter: brightness(0.85);
+}
