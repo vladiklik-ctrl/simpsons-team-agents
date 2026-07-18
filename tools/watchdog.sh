@@ -16,6 +16,11 @@
 #       * pane shows the Claude prompt "❯" (idle) .. resting
 #       * session exists but no Claude UI (crashed). down
 #
+# Resting debounce: an agent that works in bursts (short pauses between steps)
+# would otherwise flip working<->resting and look like an idler. So "resting" is
+# only reported after the agent has been idle for DEBOUNCE seconds IN A ROW; a
+# shorter pause holds the previous "working". down/working are reported at once.
+#
 # Run:   nohup bash tools/watchdog.sh >/home/vladiklik/watchdog.log 2>&1 &
 # Stop:  pkill -f tools/watchdog.sh
 # It operates in a dedicated worktree (STATUS_REPO_DIR) so it never collides with
@@ -27,6 +32,8 @@ REPO_DIR="${STATUS_REPO_DIR:-/home/vladiklik/status-writer}"
 BRANCH="experiment/live-status"
 OVERRIDE_DIR="/home/vladiklik/status"
 INTERVAL="${WATCHDOG_INTERVAL:-7}"
+# Hold "working" through idle gaps shorter than this many seconds (anti-flicker).
+DEBOUNCE="${WATCHDOG_DEBOUNCE:-25}"
 AGENTS=(march homer bart lisa maggie)
 VALID=" working resting question idle down "
 GIT_NAME="Homer"
@@ -60,10 +67,21 @@ cd "$REPO_DIR" || { echo "watchdog: repo dir not found: $REPO_DIR" >&2; exit 1; 
 mkdir -p "$OVERRIDE_DIR"
 
 prev=""
+declare -A last_working  # agent -> epoch seconds of its most recent "working"
 while true; do
   agents_json=""
+  now_epoch="$(date +%s)"
   for a in "${AGENTS[@]}"; do
-    agents_json="${agents_json}\"${a}\":\"$(detect "$a")\","
+    raw="$(detect "$a")"
+    st="$raw"
+    if [ "$raw" = "working" ]; then
+      last_working["$a"]="$now_epoch"
+    elif [ "$raw" = "resting" ]; then
+      # Hold "working" until the agent has been idle for DEBOUNCE seconds in a row.
+      lw="${last_working[$a]:-0}"
+      if [ "$((now_epoch - lw))" -lt "$DEBOUNCE" ]; then st="working"; fi
+    fi
+    agents_json="${agents_json}\"${a}\":\"${st}\","
   done
   agents_json="${agents_json%,}"
 
