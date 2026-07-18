@@ -330,7 +330,7 @@ main {
    layout. Status color (--status) drives the lantern glow, panel wash, dot and
    status word. Self-contained: inline SVG + CSS gradients, no image assets. ---- */
 .agent-card {
-  --status: #4fc85a; /* default = ready; overridden per data-status below */
+  --status: #9aa7b0; /* default = idle; overridden per data-status below */
 
   container-type: inline-size; /* enable cqw units -> text scales with card width */
   position: relative;
@@ -346,10 +346,10 @@ main {
   padding-top: 16%;
 }
 .agent-card[data-status="working"] { --status: #f4b723; }
-.agent-card[data-status="ready"] { --status: #4fc85a; }
-.agent-card[data-status="question"] { --status: #f5942a; }
-.agent-card[data-status="down"] { --status: #f2564a; }
 .agent-card[data-status="resting"] { --status: #8fb0da; }
+.agent-card[data-status="question"] { --status: #f5942a; }
+.agent-card[data-status="idle"] { --status: #9aa7b0; }
+.agent-card[data-status="down"] { --status: #f2564a; }
 
 /* ---- dark-blue metal frame with corner rivets ---- */
 .agent-card__frame {
@@ -389,11 +389,12 @@ main {
   overflow: hidden; /* keep the avatar within the panel's rounded corners */
 }
 
-/* Avatar image fills the panel. It is absolutely placed so its (tall) intrinsic
-   size can't stretch the panel/frame — the frame keeps its 2:3 ratio and the
-   image is cropped to the panel. object-fit:cover + object-position:top center
-   shows the character waist-up (head + torso), cropping the legs at the panel's
-   lower edge. Transparent WebP sits on the cream panel. */
+/* Per-status emotion frame fills the panel. Absolutely placed so its intrinsic
+   size can't stretch the panel/frame (frame keeps its 2:3 ratio). The panel is
+   WIDER than the 480x600 frame (aspect ~0.96 > 0.8), so object-fit:cover +
+   object-position:top center crops only the frame's empty bottom margin — the
+   waist-up character (head + hands, drawn with margins) is never clipped
+   (verified). The frame's own light background fills the panel. */
 .agent-card__avatar {
   position: absolute;
   inset: 0;

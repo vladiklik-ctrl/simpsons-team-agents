@@ -15,27 +15,41 @@ test("team section is a labelled landmark with a heading", () => {
   assert.match(html, /<h2 id="team-heading"[^>]*>\s*Team\s*<\/h2>/);
 });
 
-test("there are 5 agent cards, all default status ready", () => {
+// agent -> [demo status, status word]. Demo/placeholder layout so all 5 poses show.
+const DEMO = [
+  ["march", "working", "Working"],
+  ["homer", "resting", "Resting"],
+  ["bart", "question", "Question"],
+  ["lisa", "idle", "Idle"],
+  ["maggie", "down", "Down"],
+];
+
+test("5 agent cards, each with its demo status (color + word) and lantern", () => {
   assert.equal(count(/class="agent-card"/g), 5, "expected 5 agent cards");
-  assert.equal(
-    count(/class="agent-card" data-status="ready"/g),
-    5,
-    "expected all 5 cards to default to data-status=ready",
-  );
-  // decorative lantern + status word carry meaning; lantern is aria-hidden
   assert.equal(count(/agent-card__lantern" aria-hidden="true"/g), 5);
-  assert.equal(count(/agent-card__status-text">Ready</g), 5);
+  for (const [, status, word] of DEMO) {
+    assert.match(
+      html,
+      new RegExp(`class="agent-card" data-status="${status}"`),
+      `expected a card with data-status=${status}`,
+    );
+    assert.match(
+      html,
+      new RegExp(`agent-card__status-text">${word}</span>`),
+      `expected the "${word}" status word`,
+    );
+  }
 });
 
-test("each card has its own avatar image (decorative)", () => {
-  assert.equal(count(/class="agent-card__avatar"/g), 5, "expected 5 avatar images");
-  for (const name of ["march", "homer", "bart", "lisa", "maggie"]) {
+test("each card shows its agent's emotion frame for its status", () => {
+  assert.equal(count(/class="agent-card__avatar"/g), 5, "expected 5 panel images");
+  for (const [agent, status] of DEMO) {
     assert.match(
       html,
       new RegExp(
-        `<img class="agent-card__avatar" src="assets/avatars/${name}\\.webp" alt=""`,
+        `<img class="agent-card__avatar" src="assets/emotions/${agent}-${status}\\.webp" alt=""`,
       ),
-      `expected ${name} avatar image with empty alt`,
+      `expected ${agent} to show the ${status} emotion frame`,
     );
   }
 });

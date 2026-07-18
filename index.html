@@ -128,84 +128,88 @@
     <section class="team" aria-labelledby="team-heading">
       <h2 id="team-heading" class="team__title">Team</h2>
 
+      <!-- Each card shows the emotion frame for its status (assets/emotions/<agent>-<status>.webp).
+           DEMO/PLACEHOLDER statuses (different per card so all 5 poses are visible);
+           live status wiring comes later. data-status drives the lantern glow, dot
+           and status-word color. -->
       <ul class="team__grid">
-        <li class="agent-card" data-status="ready">
+        <li class="agent-card" data-status="working">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/avatars/march.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/march-working.webp" alt="" />
             </div>
             <p class="agent-card__name">March</p>
             <p class="agent-card__role">Orchestrator</p>
             <p class="agent-card__status">
               <span class="agent-card__dot" aria-hidden="true"></span>
-              <span class="agent-card__status-text">Ready</span>
+              <span class="agent-card__status-text">Working</span>
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="ready">
+        <li class="agent-card" data-status="resting">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/avatars/homer.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/homer-resting.webp" alt="" />
             </div>
             <p class="agent-card__name">Homer</p>
             <p class="agent-card__role">Developer</p>
             <p class="agent-card__status">
               <span class="agent-card__dot" aria-hidden="true"></span>
-              <span class="agent-card__status-text">Ready</span>
+              <span class="agent-card__status-text">Resting</span>
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="ready">
+        <li class="agent-card" data-status="question">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/avatars/bart.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/bart-question.webp" alt="" />
             </div>
             <p class="agent-card__name">Bart</p>
             <p class="agent-card__role">Reviewer</p>
             <p class="agent-card__status">
               <span class="agent-card__dot" aria-hidden="true"></span>
-              <span class="agent-card__status-text">Ready</span>
+              <span class="agent-card__status-text">Question</span>
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="ready">
+        <li class="agent-card" data-status="idle">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/avatars/lisa.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/lisa-idle.webp" alt="" />
             </div>
             <p class="agent-card__name">Lisa</p>
             <p class="agent-card__role">Reviewer</p>
             <p class="agent-card__status">
               <span class="agent-card__dot" aria-hidden="true"></span>
-              <span class="agent-card__status-text">Ready</span>
+              <span class="agent-card__status-text">Idle</span>
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="ready">
+        <li class="agent-card" data-status="down">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/avatars/maggie.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/maggie-down.webp" alt="" />
             </div>
             <p class="agent-card__name">Maggie</p>
             <p class="agent-card__role">Designer</p>
             <p class="agent-card__status">
               <span class="agent-card__dot" aria-hidden="true"></span>
-              <span class="agent-card__status-text">Ready</span>
+              <span class="agent-card__status-text">Down</span>
             </p>
           </div>
         </li>
