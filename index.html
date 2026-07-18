@@ -18,6 +18,42 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Intro curtain: two white cloud leaves that part to the sides once on
+         load. Decorative, never blocks clicks. -->
+    <div class="intro" aria-hidden="true">
+      <div class="leaf leaf--left"></div>
+      <div class="leaf leaf--right"></div>
+    </div>
+
+    <!-- Reusable cloud shape, defined once and stamped with <use>. -->
+    <svg
+      width="0"
+      height="0"
+      aria-hidden="true"
+      focusable="false"
+      style="position: absolute"
+    >
+      <defs>
+        <g id="st-cloud" fill="#ffffff">
+          <ellipse cx="100" cy="76" rx="86" ry="22" />
+          <circle cx="30" cy="70" r="20" />
+          <circle cx="52" cy="60" r="28" />
+          <circle cx="92" cy="46" r="38" />
+          <circle cx="134" cy="56" r="30" />
+          <circle cx="164" cy="68" r="22" />
+        </g>
+      </defs>
+    </svg>
+
+    <!-- Background clouds (decorative). Center band stays clear for the title. -->
+    <div class="sky" aria-hidden="true">
+      <svg class="cloud cloud--1" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet"><use href="#st-cloud" /></svg>
+      <svg class="cloud cloud--2" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet"><use href="#st-cloud" /></svg>
+      <svg class="cloud cloud--3" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet"><use href="#st-cloud" /></svg>
+      <svg class="cloud cloud--4" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet"><use href="#st-cloud" /></svg>
+      <svg class="cloud cloud--5" viewBox="0 0 200 100" preserveAspectRatio="xMidYMid meet"><use href="#st-cloud" /></svg>
+    </div>
+
     <header class="site-header">
       <h1 class="site-title">simpsons team agents</h1>
     </header>
