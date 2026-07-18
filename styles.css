@@ -378,7 +378,9 @@ main {
 
 /* ---- cream avatar panel (status-colored glow at top; avatar image later) ---- */
 .agent-card__panel {
+  position: relative; /* containing block for the absolutely-placed avatar */
   flex: 1 1 auto;
+  min-height: 0; /* let the panel take its flex share of the 2:3 frame */
   border-radius: 5cqw;
   background: radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--status) 45%, transparent), transparent 60%),
     #f4e6c0;
@@ -387,12 +389,19 @@ main {
   overflow: hidden; /* keep the avatar within the panel's rounded corners */
 }
 
-/* Coded avatar: fills the panel; preserveAspectRatio xMidYMax in the SVG keeps
-   the waist-up portrait centered and anchored to the panel's bottom. */
+/* Avatar image fills the panel. It is absolutely placed so its (tall) intrinsic
+   size can't stretch the panel/frame — the frame keeps its 2:3 ratio and the
+   image is cropped to the panel. object-fit:cover + object-position:top center
+   shows the character waist-up (head + torso), cropping the legs at the panel's
+   lower edge. Transparent WebP sits on the cream panel. */
 .agent-card__avatar {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: top center;
 }
 
 /* ---- brass name plate ---- */

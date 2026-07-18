@@ -27,6 +27,19 @@ test("there are 5 agent cards, all default status ready", () => {
   assert.equal(count(/agent-card__status-text">Ready</g), 5);
 });
 
+test("each card has its own avatar image (decorative)", () => {
+  assert.equal(count(/class="agent-card__avatar"/g), 5, "expected 5 avatar images");
+  for (const name of ["march", "homer", "bart", "lisa", "maggie"]) {
+    assert.match(
+      html,
+      new RegExp(
+        `<img class="agent-card__avatar" src="assets/avatars/${name}\\.webp" alt=""`,
+      ),
+      `expected ${name} avatar image with empty alt`,
+    );
+  }
+});
+
 test("cards carry the real team data (name + role)", () => {
   for (const [name, role] of [
     ["March", "Orchestrator"],
