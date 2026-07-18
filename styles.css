@@ -619,3 +619,42 @@ main {
     cursor: pointer;
   }
 }
+
+/* ============================================================================
+   Easter egg: donut rain (task 031). Triggered by donut-rain.js when the Homer
+   card is clicked more than 5 times within 10s. The overlay is purely
+   decorative and never blocks the UI (pointer-events: none). Each donut is two
+   nested elements: the outer falls (translateY), the inner spins around its own
+   centre (the hole) at its own random speed/direction — the layer never rotates.
+   transform + opacity only, so it stays on the compositor.
+   ========================================================================== */
+.donut-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* clicks/hover pass straight through to the cards */
+  overflow: hidden;     /* clip donuts at the edges -> never adds a scrollbar */
+  z-index: 9999;        /* above everything; decorative only */
+}
+.donut-rain__drop {
+  position: absolute;
+  top: 0;
+  will-change: transform;
+  animation: donut-fall linear 1 forwards;
+}
+.donut-rain__spin {
+  display: inline-block;
+  transform-origin: center; /* spin around the donut's own centre/hole */
+  will-change: transform;
+  line-height: 1;
+  user-select: none;
+  animation: donut-spin linear infinite;
+}
+@keyframes donut-fall {
+  from { transform: translateY(-12vh); opacity: 0; }
+  8%   { opacity: 1; }
+  90%  { opacity: 1; }
+  to   { transform: translateY(112vh); opacity: 0.9; }
+}
+@keyframes donut-spin {
+  to { transform: rotate(1turn); }
+}
