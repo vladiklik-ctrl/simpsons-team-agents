@@ -476,3 +476,19 @@ main {
 .agent-card__lantern svg {
   display: block;
 }
+
+/* ---- Live status transitions (experiment/live-status branch) ----
+   Smooth the live status change: crossfade the pose image, and ease the
+   status-color change on the lantern glow, the status dot and the status word. */
+.agent-card__avatar {
+  transition: opacity 0.18s ease;
+}
+.agent-card__lantern {
+  transition: filter 0.4s ease, color 0.4s ease;
+}
+.agent-card__dot {
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+.agent-card__status {
+  transition: color 0.4s ease;
+}

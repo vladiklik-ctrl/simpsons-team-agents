@@ -30,7 +30,7 @@ test("5 agent cards, each with its demo status (color + word) and lantern", () =
   for (const [, status, word] of DEMO) {
     assert.match(
       html,
-      new RegExp(`class="agent-card" data-status="${status}"`),
+      new RegExp(`class="agent-card"[^>]*data-status="${status}"`),
       `expected a card with data-status=${status}`,
     );
     assert.match(

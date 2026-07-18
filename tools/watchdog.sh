@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+#
+# Live-status watchdog (experiment/live-status branch).
+#
+# Single writer of status.json. Every ~7s it decides each agent's status and,
+# ONLY when something changed, writes status.json and commits+pushes it to the
+# branch (no spam). The site polls status.json (from raw.githubusercontent) and
+# updates the cards live.
+#
+# Status per agent (march/homer/bart/lisa/maggie):
+#   - self-report override file /home/vladiklik/status/<agent>.status (if present
+#     and holds a valid status word) wins — lets an agent report e.g. question/idle
+#   - else, from its tmux session pane:
+#       * no tmux session .......................... down
+#       * pane shows "esc to interrupt" (busy) ..... working
+#       * pane shows the Claude prompt "❯" (idle) .. resting
+#       * session exists but no Claude UI (crashed). down
+#
+# Run:   nohup bash tools/watchdog.sh >/home/vladiklik/watchdog.log 2>&1 &
+# Stop:  pkill -f tools/watchdog.sh
+# It operates in a dedicated worktree (STATUS_REPO_DIR) so it never collides with
+# the main dev checkout — it is the only thing that commits status.json.
+#
+set -uo pipefail
+
+REPO_DIR="${STATUS_REPO_DIR:-/home/vladiklik/status-writer}"
+BRANCH="experiment/live-status"
+OVERRIDE_DIR="/home/vladiklik/status"
+INTERVAL="${WATCHDOG_INTERVAL:-7}"
+AGENTS=(march homer bart lisa maggie)
+VALID=" working resting question idle down "
+GIT_NAME="Homer"
+GIT_EMAIL="yf@getamplify.team"
+
+is_valid() { case "$VALID" in *" $1 "*) return 0 ;; *) return 1 ;; esac; }
+
+detect() {
+  local a="$1" ov v pane
+  ov="$OVERRIDE_DIR/$a.status"
+  if [ -f "$ov" ]; then
+    v="$(tr '[:upper:]' '[:lower:]' <"$ov" | tr -d '[:space:]')"
+    if is_valid "$v"; then printf '%s' "$v"; return; fi
+  fi
+  if ! tmux has-session -t "$a" 2>/dev/null; then printf 'down'; return; fi
+  pane="$(tmux capture-pane -pt "$a" -S -40 2>/dev/null || true)"
+  if printf '%s' "$pane" | grep -qi 'esc to interrupt'; then printf 'working'; return; fi
+  if printf '%s' "$pane" | grep -q '❯'; then printf 'resting'; return; fi
+  printf 'down'
+}
+
+cd "$REPO_DIR" || { echo "watchdog: repo dir not found: $REPO_DIR" >&2; exit 1; }
+mkdir -p "$OVERRIDE_DIR"
+
+prev=""
+while true; do
+  agents_json=""
+  for a in "${AGENTS[@]}"; do
+    agents_json="${agents_json}\"${a}\":\"$(detect "$a")\","
+  done
+  agents_json="${agents_json%,}"
+
+  if [ "$agents_json" != "$prev" ]; then
+    now="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf '{"agents":{%s},"updated":"%s"}\n' "$agents_json" "$now" >status.json
+    git add status.json
+    if git -c user.name="$GIT_NAME" -c user.email="$GIT_EMAIL" \
+         commit -q -m "status: live update ($now)" 2>/dev/null; then
+      tries=0
+      until git push -q origin "$BRANCH" 2>/dev/null; do
+        tries=$((tries + 1))
+        if [ "$tries" -ge 5 ]; then echo "watchdog: push failed after retries" >&2; break; fi
+        git pull -q --rebase origin "$BRANCH" 2>/dev/null || true
+        sleep 2
+      done
+    fi
+    prev="$agents_json"
+  fi
+  sleep "$INTERVAL"
+done

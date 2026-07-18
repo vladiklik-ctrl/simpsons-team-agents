@@ -133,7 +133,7 @@
            live status wiring comes later. data-status drives the lantern glow, dot
            and status-word color. -->
       <ul class="team__grid">
-        <li class="agent-card" data-status="working">
+        <li class="agent-card" data-agent="march" data-status="working">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
@@ -149,7 +149,7 @@
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="resting">
+        <li class="agent-card" data-agent="homer" data-status="resting">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
@@ -165,7 +165,7 @@
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="question">
+        <li class="agent-card" data-agent="bart" data-status="question">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
@@ -181,7 +181,7 @@
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="idle">
+        <li class="agent-card" data-agent="lisa" data-status="idle">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
@@ -197,7 +197,7 @@
             </p>
           </div>
         </li>
-        <li class="agent-card" data-status="down">
+        <li class="agent-card" data-agent="maggie" data-status="down">
           <span class="agent-card__lantern" aria-hidden="true">
             <svg viewBox="0 0 60 78" width="100%" height="100%"><use href="#agent-lantern" /></svg>
           </span>
@@ -215,5 +215,9 @@
         </li>
       </ul>
     </section>
+
+    <!-- Live status polling (experiment branch): updates each card's pose,
+         lantern, dot and word from status.json without a reload. -->
+    <script src="live-status.js" defer></script>
   </body>
 </html>
