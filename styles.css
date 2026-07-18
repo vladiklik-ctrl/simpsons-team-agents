@@ -336,7 +336,14 @@ main {
   position: relative;
   list-style: none;
   min-width: 0; /* avoid grid overflow */
-  padding-top: 13cqw; /* reserve space for the overhanging lantern */
+  /* Reserve just enough space above the frame for the lantern to overhang and sit
+     SNUG on the top edge (its lower cage overlaps into the frame). A PERCENTAGE is
+     used on purpose: padding percentages resolve against the containing block's
+     width, which for a grid item is the grid track = the card's own width. So this
+     scales with the card (unlike cqw, which on a container element's own length
+     falls back to the viewport — the old 13cqw rendered as a huge 13vw gap). The
+     lantern is top:0 (never above the <li>), so it never clashes with the row above. */
+  padding-top: 16%;
 }
 .agent-card[data-status="working"] { --status: #f4b723; }
 .agent-card[data-status="ready"] { --status: #4fc85a; }
