@@ -43,9 +43,13 @@ detect() {
   fi
   if ! tmux has-session -t "$a" 2>/dev/null; then printf 'down'; return; fi
   pane="$(tmux capture-pane -pt "$a" -S -40 2>/dev/null || true)"
-  if printf '%s' "$pane" | grep -qi 'esc to interrupt'; then printf 'working'; return; fi
-  if printf '%s' "$pane" | grep -q '❯'; then printf 'resting'; return; fi
-  printf 'down'
+  # busy: the agent CLI is processing (Claude/others show "esc to interrupt/cancel")
+  if printf '%s' "$pane" | grep -qiE 'esc to interrupt|esc to cancel'; then printf 'working'; return; fi
+  # crashed: the CLI exited to a bare shell prompt (last non-blank line is a shell)
+  if printf '%s\n' "$pane" | grep -vE '^[[:space:]]*$' | tail -1 \
+       | grep -qE '[[:alnum:]._-]+@[[:alnum:]._-]+.*[$#][[:space:]]*$'; then printf 'down'; return; fi
+  # session alive at an idle prompt (Claude "❯", Codex "›", or any) -> resting
+  printf 'resting'
 }
 
 cd "$REPO_DIR" || { echo "watchdog: repo dir not found: $REPO_DIR" >&2; exit 1; }
