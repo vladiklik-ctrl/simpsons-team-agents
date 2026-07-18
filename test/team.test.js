@@ -47,7 +47,7 @@ test("each card shows its agent's emotion frame for its status", () => {
     assert.match(
       html,
       new RegExp(
-        `<img class="agent-card__avatar" src="assets/emotions/${agent}-${status}\\.webp" alt=""`,
+        `<img class="agent-card__avatar" src="assets/emotions/${agent}-${status}\\.webp(?:\\?v=[^"]*)?" alt=""`,
       ),
       `expected ${agent} to show the ${status} emotion frame`,
     );

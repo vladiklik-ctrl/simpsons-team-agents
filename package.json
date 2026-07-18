@@ -5,7 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "stamp": "node tools/stamp-assets.mjs"
   },
   "license": "MIT"
 }

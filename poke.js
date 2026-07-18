@@ -18,15 +18,18 @@
   var POKE_MS = 500; // how long the poked pose stays up (~0.5s)
   var FADE_MS = 110; // quick crossfade so the reaction feels responsive
 
+  // Cache-busting suffix for emotion images (set in index.html by the stamp step).
+  var V = window.ASSET_V ? "?v=" + window.ASSET_V : "";
+
   // Offline has no artwork; it reuses the calm "resting" pose (mirrors live-status.js).
   function poseFor(status) {
     return status === "offline" ? "resting" : status;
   }
   function statusSrc(agent, status) {
-    return "assets/emotions/" + agent + "-" + poseFor(status) + ".webp";
+    return "assets/emotions/" + agent + "-" + poseFor(status) + ".webp" + V;
   }
   function pokedSrc(agent) {
-    return "assets/emotions/" + agent + "-poked.webp";
+    return "assets/emotions/" + agent + "-poked.webp" + V;
   }
 
   // Preload the poked poses so the first tap swaps instantly (no flash).

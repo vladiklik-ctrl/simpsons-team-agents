@@ -32,6 +32,9 @@
   // (unlike raw.githubusercontent, which ignores cache-busting and caches 5 min).
   var STATUS_URL = "status.json";
   var POLL_MS = 5000;
+  // Cache-busting suffix for emotion images (set in index.html by the stamp
+  // step). status.json keeps its own live ?t= buster below.
+  var V = window.ASSET_V ? "?v=" + window.ASSET_V : "";
 
   function cap(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
@@ -43,7 +46,7 @@
   AGENTS.forEach(function (a) {
     POSES.forEach(function (p) {
       var img = new Image();
-      img.src = "assets/emotions/" + a + "-" + p + ".webp";
+      img.src = "assets/emotions/" + a + "-" + p + ".webp" + V;
     });
   });
 
@@ -62,7 +65,7 @@
     // avatar image; it will revert to this new status's pose when it ends. We
     // still updated the status/word/lantern above, so only the picture waits.
     if (img && !card.dataset.poked) {
-      var src = "assets/emotions/" + agent + "-" + poseFor(status) + ".webp";
+      var src = "assets/emotions/" + agent + "-" + poseFor(status) + ".webp" + V;
       // brief crossfade for a smooth pose change (image is preloaded)
       img.style.opacity = "0";
       window.setTimeout(function () {

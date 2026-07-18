@@ -15,7 +15,15 @@
       type="font/woff2"
       crossorigin
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=838751894f" />
+    <!-- Cache-busting asset version. Static references below carry ?v=<hash>;
+         the scripts read window.ASSET_V to stamp the emotion image URLs they
+         build at runtime. Both are set by tools/stamp-assets.mjs (npm run stamp)
+         from a hash of the asset contents, so a changed file is fetched fresh
+         without a hard refresh. -->
+    <script>
+      window.ASSET_V = "838751894f";
+    </script>
   </head>
   <body>
     <!-- Intro curtain: a white screen of 6 clouds in two leaves. At t=0 they
@@ -139,7 +147,7 @@
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/emotions/march-working.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/march-working.webp?v=838751894f" alt="" />
             </div>
             <p class="agent-card__name">March</p>
             <p class="agent-card__role">Orchestrator</p>
@@ -155,7 +163,7 @@
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/emotions/homer-resting.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/homer-resting.webp?v=838751894f" alt="" />
             </div>
             <p class="agent-card__name">Homer</p>
             <p class="agent-card__role">Developer</p>
@@ -171,7 +179,7 @@
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/emotions/bart-question.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/bart-question.webp?v=838751894f" alt="" />
             </div>
             <p class="agent-card__name">Bart</p>
             <p class="agent-card__role">Reviewer</p>
@@ -187,7 +195,7 @@
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/emotions/lisa-idle.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/lisa-idle.webp?v=838751894f" alt="" />
             </div>
             <p class="agent-card__name">Lisa</p>
             <p class="agent-card__role">Reviewer</p>
@@ -203,7 +211,7 @@
           </span>
           <div class="agent-card__frame">
             <div class="agent-card__panel">
-              <img class="agent-card__avatar" src="assets/emotions/maggie-down.webp" alt="" />
+              <img class="agent-card__avatar" src="assets/emotions/maggie-down.webp?v=838751894f" alt="" />
             </div>
             <p class="agent-card__name">Maggie</p>
             <p class="agent-card__role">Designer</p>
@@ -218,12 +226,12 @@
 
     <!-- Live status polling (experiment branch): updates each card's pose,
          lantern, dot and word from status.json without a reload. -->
-    <script src="live-status.js" defer></script>
+    <script src="live-status.js?v=838751894f" defer></script>
     <!-- Card poke reaction (task 030): click/tap a card -> poked pose for ~1s,
          then back to the current live status. Visual only. -->
-    <script src="poke.js" defer></script>
+    <script src="poke.js?v=838751894f" defer></script>
     <!-- Easter egg (task 031): >5 Homer clicks within 10s -> 5s donut rain.
          Decorative overlay, pointer-events:none, visual only. -->
-    <script src="donut-rain.js" defer></script>
+    <script src="donut-rain.js?v=838751894f" defer></script>
   </body>
 </html>
