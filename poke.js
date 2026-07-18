@@ -1,7 +1,7 @@
 /*
   Card "poke" reaction (experiment/live-status branch, task 030).
   Clicking or tapping an agent card swaps its avatar to the agent's "poked" pose
-  for ~1 second, then reverts to the pose of the card's CURRENT live status
+  for ~0.5 second, then reverts to the pose of the card's CURRENT live status
   (data-status may have changed meanwhile, so it is read at revert time).
 
   Visual only: no message is sent to the agent yet. The real "notify the agent"
@@ -15,7 +15,7 @@
   "use strict";
 
   var AGENTS = ["march", "homer", "bart", "lisa", "maggie"];
-  var POKE_MS = 1000; // how long the poked pose stays up
+  var POKE_MS = 500; // how long the poked pose stays up (~0.5s)
   var FADE_MS = 110; // quick crossfade so the reaction feels responsive
 
   // Offline has no artwork; it reuses the calm "resting" pose (mirrors live-status.js).
