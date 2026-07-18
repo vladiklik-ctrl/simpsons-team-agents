@@ -1,0 +1,14 @@
+[Unit]
+Description=Simpsons team live-status watchdog (writes/pushes status.json)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=STATUS_REPO_DIR=/home/vladiklik/status-writer
+ExecStart=/usr/bin/env bash /home/vladiklik/status-writer/tools/watchdog.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target
