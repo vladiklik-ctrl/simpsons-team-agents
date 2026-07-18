@@ -18,15 +18,19 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Intro curtain: exactly 5 puffy clouds that together form a solid white
-         screen, then part in 5 different directions. Decorative, never blocks
-         clicks. Shape variants mixed so neighbours differ (not clones). -->
+    <!-- Intro curtain: a white screen of 6 clouds in two leaves. At t=0 they
+         fully cover the viewport; the left leaf slides left, the right leaf
+         slides right (each cloud at a different speed), revealing the title.
+         Decorative, never blocks clicks. -->
     <div class="intro" aria-hidden="true">
-      <svg class="cur cur--1" viewBox="0 0 200 100"><use href="#st-cloud-a" /></svg>
-      <svg class="cur cur--2" viewBox="0 0 200 100"><use href="#st-cloud-b" /></svg>
-      <svg class="cur cur--3" viewBox="0 0 200 100"><use href="#st-cloud-c" /></svg>
-      <svg class="cur cur--4" viewBox="0 0 200 100"><use href="#st-cloud-b" /></svg>
-      <svg class="cur cur--5" viewBox="0 0 200 100"><use href="#st-cloud-a" /></svg>
+      <!-- LEFT leaf (exits left) -->
+      <svg class="cur cL1" viewBox="0 0 200 100"><use href="#st-cloud-a" /></svg>
+      <svg class="cur cL2" viewBox="0 0 200 100"><use href="#st-cloud-b" /></svg>
+      <svg class="cur cL3" viewBox="0 0 200 100"><use href="#st-cloud-c" /></svg>
+      <!-- RIGHT leaf (exits right) -->
+      <svg class="cur cR1" viewBox="0 0 200 100"><use href="#st-cloud-b" /></svg>
+      <svg class="cur cR2" viewBox="0 0 200 100"><use href="#st-cloud-a" /></svg>
+      <svg class="cur cR3" viewBox="0 0 200 100"><use href="#st-cloud-b" /></svg>
     </div>
 
     <!-- Three reusable cloud shape variants, defined once and stamped with <use>. -->
@@ -89,8 +93,14 @@
       </div>
     </div>
 
-    <header class="site-header">
-      <h1 class="site-title">simpsons team agents</h1>
-    </header>
+    <!-- Header reserves the title's vertical space (the title itself is a fixed,
+         direct child of <body> below, so it is never clipped by a transformed
+         ancestor). -->
+    <header class="site-header"></header>
+
+    <!-- Title: MUST be a direct child of <body> (no transformed/filtered
+         ancestor) so the position:fixed centering is clipped only by the
+         viewport. Styled by title-color-spec; this only adds the intro motion. -->
+    <h1 class="site-title">simpsons team agents</h1>
   </body>
 </html>

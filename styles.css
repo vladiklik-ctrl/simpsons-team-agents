@@ -12,6 +12,22 @@
   --title-yellow: #ffd90f; /* title fill */
   --title-outline: #0c1d30; /* dark outline that carries legibility */
   --page-sky: #4fa9e6; /* page background — declared now, applied in step 004 */
+
+  /* Intro title knobs (v5). */
+  --rest-top: 22px; /* final vertical offset of the title from the top */
+  /* Start scale so the whole wordmark is ~90vw (big, fully visible, centered).
+     The resting title is font-size clamp(2rem,8vw,4.5rem): on wide screens it is
+     capped (small in vw) so it needs a bigger scale; on narrow/portrait screens
+     8vw already makes it near full width, so a small scale keeps it whole. */
+  --giant: 1.4;
+}
+
+/* Narrow/portrait: resting title is already ~90vw, so start barely bigger
+   (keeps the whole wordmark on screen, still centered). */
+@media (max-width: 900px) {
+  :root {
+    --giant: 1.05;
+  }
 }
 
 /*
@@ -36,9 +52,10 @@ body {
 }
 
 .site-header {
-  /* Small, responsive gap from the top edge. */
-  padding-top: clamp(1.5rem, 6vh, 4rem);
-  text-align: center;
+  /* The title is a fixed, direct child of <body> (see below), so it is out of
+     flow. Reserve its vertical band here so future content flows below it and
+     the layout does not collapse. */
+  min-height: clamp(4.5rem, 8vh, 7rem);
 }
 
 .site-title {
@@ -73,13 +90,16 @@ body {
 }
 
 /* ============================================================================
-   Clouds + intro "title-card" animation v2 (task 009) — replaces v1.
-   Pure CSS, no JS. transform/opacity only. Plays on every load. ~2.8s.
-   No-flash: resting state = FINAL (title in header at scale 1; curtain clouds
-   off-screen + transparent). Each @keyframes 0% = the START state; every intro
-   animation uses animation-fill-mode: both. styles.css is render-blocking, so
-   first paint already shows the 0% frame (solid white curtain), never the final.
-   No prefers-reduced-motion by design: single-user site, intro always plays.
+   Background clouds + intro "title-card" animation v5 (task 014) — replaces v3.
+   Intro: white screen of 6 clouds (two leaves) parts L/R at different speeds
+   while a true-centered giant title eases IN (slow -> fast) to the header. ~3s.
+   Pure CSS, no JS. transform/opacity only. Plays on every load.
+   No-flash: base state = FINAL (title in header; curtain off-screen). Each
+   @keyframes 0% = the START (white screen / giant title); animation-fill-mode:
+   both. styles.css is render-blocking, so first paint is the 0% frame.
+   Anti-freeze: an EXPLICIT prefers-reduced-motion block shows the final state
+   (some engines freeze animations at the 0% frame under reduce-motion).
+   Background marquee (below) is UNCHANGED from v2/v3.
    ========================================================================== */
 
 /* ---- No horizontal scroll, ever (huge title + off-screen curtain clouds) ---- */
@@ -93,7 +113,6 @@ body {
   z-index: 0;
 }
 .site-header,
-.site-title,
 main {
   position: relative;
   z-index: 1;
@@ -140,21 +159,30 @@ main {
   height: auto;
 }
 
-/* ---- Title: GIANT zoom-out (much bigger than screen -> resting header spot) ---- */
-/* Visual style (yellow + outline, font) is untouched; this only adds motion. */
+/* ---- Title: TRUE-centered giant -> header, ease-IN (v5) ----
+   position:fixed + direct child of <body> (no transformed ancestor) so the
+   centered element is clipped only by the viewport (symmetric, never "eaten").
+   Visual style (yellow + outline, font) stays from title-color-spec; this only
+   adds motion. BASE transform = FINAL resting state (no-flash + anti-freeze). */
 .site-title {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  z-index: 1;
+  white-space: nowrap; /* keep the wordmark on one line at any scale */
+  transform: translate(-50%, var(--rest-top)) scale(1);
   transform-origin: center center;
-  animation: title-zoom 2.9s cubic-bezier(0.22, 0.61, 0.36, 1) 0s both; /* ease-out, no overshoot */
+  animation: title-in 3s cubic-bezier(0.55, 0, 1, 0.45) 0s both; /* ease-IN: slow -> fast */
   will-change: transform;
 }
-@keyframes title-zoom {
-  /* Giant and viewport-centered, HELD to 20% so the shrink is clearly visible,
-     then it travels up to the header while/after the clouds part. */
-  0%, 20% { transform: translateY(40vh) scale(5); }
-  100% { transform: translateY(0) scale(1); } /* == resting header position/size */
+@keyframes title-in {
+  /* GIANT and at the TRUE viewport center (the 50% cancels half its own height,
+     so it is exactly centered regardless of the title's height). */
+  0% { transform: translate(-50%, calc(50vh - 50%)) scale(var(--giant)); }
+  100% { transform: translate(-50%, var(--rest-top)) scale(1); } /* header spot, size 1 */
 }
 
-/* ---- Intro curtain: 5 recognizable clouds clustered at center, part at varied speeds ---- */
+/* ---- Intro curtain: white screen of 6 clouds (2 leaves) that part L/R ---- */
 .intro {
   position: fixed;
   inset: 0;
@@ -163,54 +191,72 @@ main {
 }
 .cur {
   position: absolute;
-  height: auto; /* width-driven; each puff reads as a separate cloud */
-  will-change: transform, opacity;
+  /* Width-driven (2:1 viewBox). The vh floor keeps clouds tall enough to fully
+     cover the viewport on tall/portrait windows (landscape stays at 81vw). */
+  width: max(81vw, 110vh);
+  height: auto;
+  will-change: transform;
 }
-/* Moderate sizes + centered cluster hiding the giant title's central text.
-   Sky at the edges / small gaps is intended (operator's priority: reads as 5
-   clouds > 100% white). */
-.cur--1 { width: 36vw; left: 19.5vw; top: 23vh; } /* A · up-left   */
-.cur--2 { width: 36vw; left: 47vw; top: 23vh; }   /* B · up-right  */
-.cur--3 { width: 42vw; left: 29vw; top: 30vh; }   /* C · down      */
-.cur--4 { width: 38vw; left: 21vw; top: 42vh; }   /* B · down-left */
-.cur--5 { width: 38vw; left: 43vw; top: 42vh; }   /* A · right     */
+/* 3 stacked clouds per side, big + overlapping = solid white screen at t=0. */
+.cL1 { left: -13vw; top: -26vh; } /* A */
+.cL2 { left: -16vw; top: 13vh; }  /* B */
+.cL3 { left: -13vw; top: 46vh; }  /* C */
+.cR1 { left: 32vw; top: -26vh; }  /* B */
+.cR2 { left: 35vw; top: 13vh; }   /* A */
+.cR3 { left: 32vw; top: 46vh; }   /* B */
 
-/* Resting (final) state = off-screen + transparent (== each keyframe 100%). */
-.cur--1 { transform: translate(-120vw, -120vh); opacity: 0; }
-.cur--2 { transform: translate(120vw, -120vh); opacity: 0; }
-.cur--3 { transform: translate(0, 120vh); opacity: 0; }
-.cur--4 { transform: translate(-120vw, 120vh); opacity: 0; }
-.cur--5 { transform: translate(130vw, 0); opacity: 0; }
+/* Resting (final) = off-screen (== each keyframe 100%). translateX by the
+   element's own width (+ margin) so the exit is fully off-screen at any width. */
+.cL1, .cL2, .cL3 { transform: translateX(calc(-100% - 40vw)); }
+.cR1, .cR2, .cR3 { transform: translateX(calc(100% + 40vw)); }
 
-/* DIFFERENT durations = different speeds (organic, not mechanical). Same delay. */
-.cur--1 { animation: cur-1 2.2s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
-.cur--2 { animation: cur-2 2.7s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
-.cur--3 { animation: cur-3 2.0s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
-.cur--4 { animation: cur-4 2.5s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
-.cur--5 { animation: cur-5 2.3s cubic-bezier(0.45, 0, 0.35, 1) 0.2s both; }
+/* DIFFERENT durations = different speeds -> clouds in a leaf separate. ease-IN. */
+.cL1 { animation: part-left 2.6s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
+.cL2 { animation: part-left 2.3s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
+.cL3 { animation: part-left 3s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
+.cR1 { animation: part-right 2.5s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
+.cR2 { animation: part-right 3s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
+.cR3 { animation: part-right 2.7s cubic-bezier(0.55, 0, 1, 0.45) 0s both; }
 
-/* 0%,10% = brief "closed" cluster over the center, then each flies out. */
-@keyframes cur-1 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-120vw, -120vh); opacity: 0; } }
-@keyframes cur-2 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(120vw, -120vh); opacity: 0; } }
-@keyframes cur-3 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(0, 120vh); opacity: 0; } }
-@keyframes cur-4 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(-120vw, 120vh); opacity: 0; } }
-@keyframes cur-5 { 0%, 10% { transform: translate(0, 0); opacity: 1; } 100% { transform: translate(130vw, 0); opacity: 0; } }
+@keyframes part-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-100% - 40vw)); }
+}
+@keyframes part-right {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(100% + 40vw)); }
+}
 
-/* ---- Anti-freeze: honor reduced-motion by showing the FINAL state ----
-   Some engines (e.g. the operator's desktop Opera) pause CSS animations under
-   prefers-reduced-motion; with animation-fill-mode:both that would hold the 0%
-   frame (the cloud cluster over the title) forever. Overriding to the resting/
-   final state guarantees the page is never stuck. This intentionally overrides
-   the spec's "always play" default (decision made after the operator's freeze bug). */
+/* ---- Anti-freeze: EXPLICIT reduced-motion fallback showing the FINAL state ----
+   Maggie's spec relies on "base = final", but I confirmed by diagnosis that an
+   engine which pauses animations under reduce-motion (the operator's desktop
+   Opera) holds the 0% frame (white screen over the title) forever via
+   fill-mode:both. So this explicit media query is required: it removes the
+   curtain and pins the title in the header, so the page is never stuck. */
 @media (prefers-reduced-motion: reduce) {
   .intro {
     display: none;
   }
   .site-title {
     animation: none;
-    transform: none;
+    transform: translate(-50%, var(--rest-top)) scale(1);
   }
   .drift-track {
     animation: none;
+  }
+}
+
+/* Portrait / narrow viewports: a short-but-tall screen needs more vertical
+   cloud overlap and a wider left/right spread to keep the t=0 white screen
+   fully solid (verified with a pixel histogram). Landscape is unaffected. */
+@media (max-width: 900px) {
+  .cur {
+    width: max(81vw, 150vh);
+  }
+  .cL1, .cL2, .cL3 {
+    left: -55vw; /* push the concave left edge off-screen so the corner notches close */
+  }
+  .cR1, .cR2, .cR3 {
+    left: 4vw;
   }
 }
