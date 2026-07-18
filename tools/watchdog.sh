@@ -55,7 +55,10 @@ detect() {
   # interrupt") and Codex ("Working (… esc to interrupt)"). Re-evaluated every
   # cycle, so a return to idle flips it straight back to resting.
   bottom="$(tmux capture-pane -pt "$a" 2>/dev/null | grep -vE '^[[:space:]]*$' | tail -n 6 || true)"
-  if printf '%s' "$bottom" | grep -qiE 'esc to interrupt'; then printf 'working'; return; fi
+  # Match the busy hint even when a narrow pane truncates it ("esc to i…").
+  # "esc to i" is a substring of the full "esc to interrupt" and only appears
+  # while a Claude/Codex turn is running, so it stays busy-only but width-proof.
+  if printf '%s' "$bottom" | grep -qiE 'esc to i'; then printf 'working'; return; fi
   # crashed: the CLI exited to a bare shell prompt (last non-blank line is a shell)
   if printf '%s\n' "$bottom" | tail -1 \
        | grep -qE '[[:alnum:]._-]+@[[:alnum:]._-]+.*[$#][[:space:]]*$'; then printf 'down'; return; fi
