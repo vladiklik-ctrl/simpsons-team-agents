@@ -384,6 +384,15 @@ main {
     #f4e6c0;
   border: 1px solid #c9b487;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+  overflow: hidden; /* keep the avatar within the panel's rounded corners */
+}
+
+/* Coded avatar: fills the panel; preserveAspectRatio xMidYMax in the SVG keeps
+   the waist-up portrait centered and anchored to the panel's bottom. */
+.agent-card__avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ---- brass name plate ---- */
