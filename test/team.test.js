@@ -21,7 +21,7 @@ const DEMO = [
   ["homer", "resting", "Resting"],
   ["bart", "question", "Question"],
   ["lisa", "idle", "Idle"],
-  ["maggie", "down", "Down"],
+  ["maggie", "down", "Crashed"],
 ];
 
 test("5 agent cards, each with its demo status (color + word) and lantern", () => {

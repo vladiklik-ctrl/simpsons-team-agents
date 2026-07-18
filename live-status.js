@@ -12,7 +12,21 @@
   "use strict";
 
   var AGENTS = ["march", "homer", "bart", "lisa", "maggie"];
-  var STATUSES = ["working", "resting", "question", "idle", "down"];
+  var STATUSES = ["working", "resting", "question", "idle", "down", "offline"];
+  // Display word per status (down = "Crashed"; offline = "Offline").
+  var WORDS = {
+    working: "Working",
+    idle: "Idle",
+    question: "Question",
+    resting: "Resting",
+    down: "Crashed",
+    offline: "Offline",
+  };
+  // Pose frame per status. Offline reuses the calm "resting" pose (greyed via CSS);
+  // there is no dedicated offline artwork.
+  function poseFor(status) {
+    return status === "offline" ? "resting" : status;
+  }
   var RAW =
     "https://raw.githubusercontent.com/vladiklik-ctrl/simpsons-team-agents/experiment/live-status/status.json";
   var POLL_MS = 5000;
@@ -38,13 +52,14 @@
 
     var img = card.querySelector(".agent-card__avatar");
     var word = card.querySelector(".agent-card__status-text");
-    if (word) word.textContent = cap(status);
+    if (word) word.textContent = WORDS[status] || cap(status);
 
     if (img) {
+      var src = "assets/emotions/" + agent + "-" + poseFor(status) + ".webp";
       // brief crossfade for a smooth pose change (image is preloaded)
       img.style.opacity = "0";
       window.setTimeout(function () {
-        img.src = "assets/emotions/" + agent + "-" + status + ".webp";
+        img.src = src;
         img.style.opacity = "1";
       }, 180);
     }

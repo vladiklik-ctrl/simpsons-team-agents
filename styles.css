@@ -330,7 +330,7 @@ main {
    layout. Status color (--status) drives the lantern glow, panel wash, dot and
    status word. Self-contained: inline SVG + CSS gradients, no image assets. ---- */
 .agent-card {
-  --status: #9aa7b0; /* default = idle; overridden per data-status below */
+  --status: #4fbbe8; /* default = idle; overridden per data-status below */
 
   container-type: inline-size; /* enable cqw units -> text scales with card width */
   position: relative;
@@ -345,11 +345,18 @@ main {
      lantern is top:0 (never above the <li>), so it never clashes with the row above. */
   padding-top: 16%;
 }
-.agent-card[data-status="working"] { --status: #f4b723; }
-.agent-card[data-status="resting"] { --status: #8fb0da; }
-.agent-card[data-status="question"] { --status: #f5942a; }
-.agent-card[data-status="idle"] { --status: #9aa7b0; }
-.agent-card[data-status="down"] { --status: #f2564a; }
+.agent-card[data-status="working"] { --status: #46c851; }
+.agent-card[data-status="idle"] { --status: #4fbbe8; }
+.agent-card[data-status="question"] { --status: #f59120; }
+.agent-card[data-status="resting"] { --status: #b084de; }
+.agent-card[data-status="down"] { --status: #f26a5e; }
+.agent-card[data-status="offline"] { --status: #93a0ae; }
+
+/* Offline: desaturate the whole avatar so it reads as "powered off" (the frame,
+   plates and status bar keep their normal colors — only the person goes grey). */
+.agent-card[data-status="offline"] .agent-card__avatar {
+  filter: grayscale(1) opacity(0.9);
+}
 
 /* ---- dark-blue metal frame with corner rivets ---- */
 .agent-card__frame {
