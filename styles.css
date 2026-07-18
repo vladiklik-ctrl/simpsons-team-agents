@@ -71,3 +71,34 @@ body {
       0 2px 0 var(--title-outline), 2px 2px 0 var(--title-outline);
   }
 }
+
+/*
+  ===== TEMPORARY PREVIEW (task-005) =====
+  Single static white cloud so the operator can review Maggie's cloud shape on
+  the sky-blue background. This is NOT the final clouds layout and has no
+  animation. Remove this whole block (and the matching HTML block marked
+  "TEMPORARY PREVIEW") to revert.
+*/
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden; /* clip any overflow so there is no horizontal scroll */
+  pointer-events: none; /* purely decorative; never steal clicks */
+}
+.site-header {
+  position: relative;
+  z-index: 1; /* keep the yellow title above the cloud */
+}
+.cloud {
+  position: absolute;
+  height: auto;
+  display: block;
+}
+.cloud--preview {
+  width: clamp(220px, 42vw, 380px);
+  top: 34%;
+  left: 50%;
+  transform: translateX(-50%); /* centered below the title, clearly visible */
+}
+/* ===== END TEMPORARY PREVIEW ===== */
